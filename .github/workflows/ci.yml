@@ -1,0 +1,41 @@
+name: Python checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12', '3.13', '3.14']
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Build and install the wheel
+        run: |
+          python -m pip wheel --no-deps --wheel-dir dist .
+          python -m pip install --no-deps dist/*.whl
+      - name: Unit suite
+        run: python -m unittest discover -s tests -v
+      - name: Installed package and worked example outside the checkout
+        working-directory: ${{ runner.temp }}
+        run: |
+          python -c "from pathlib import Path; import sys, witness_engine, witness_bench; assert all(Path(m.__file__).resolve().is_relative_to(Path(sys.prefix).resolve()) for m in (witness_engine, witness_bench))"
+          python "$GITHUB_WORKSPACE/examples/policy_evidence.py"
+      - name: Independent smoke runs on the synthetic corpus
+        run: |
+          witness-bench --profile smoke --seed 20260829 --repetitions 2 --output artifacts/smoke-a.json --report artifacts/smoke-a.md
+          witness-bench --profile smoke --seed 20260829 --repetitions 2 --output artifacts/smoke-b.json --report artifacts/smoke-b.md
+          python scripts/check_benchmark.py artifacts/smoke-a.json artifacts/smoke-b.json

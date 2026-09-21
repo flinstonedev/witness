@@ -1,0 +1,25 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.coverage
+.pytest_cache/
+results/*.json
+!results/benchmark.json
+!results/multihop_development_oracle.json
+results/*.csv
+results/*.html
+
+# Local data, source-bearing caches and generated reports are never examples.
+/.witness/
+/private-data/
+/artifacts/
+/results/local/
+/build/
+/dist/
+/.venv*/
+/.env
+/.env.*
+!/.env.example
+*.log
+.DS_Store
