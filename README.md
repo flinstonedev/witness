@@ -1,13 +1,15 @@
 # Witness
 
-Witness is a research prototype for **proof-carrying information retrieval**:
-compile a question into evidence obligations, execute those obligations over the
-authorized corpus, verify exact source spans, reduce typed observations, search
-for counter-evidence, and render only ledger-backed claims.
+Witness is an alpha research prototype for tracing answers back to source
+documents. Given a question, it finds candidate passages, checks that quotes
+match the original sources and are permitted for the reader, searches for
+contrary evidence, and records what remains uncertain. Its built-in question
+matching is lexical; a matching passage is not proof that it answers the
+question.
 
-This repository also contains a falsifiable benchmark against controlled
-offline approximations of vector RAG, hybrid RAG, reranked RAG, GraphRAG,
-long-context prompting, agentic RAG, and an LLM-maintained wiki.
+The repository also includes a reproducible synthetic benchmark comparing
+Witness with simplified offline versions of other document-search and
+question-answering approaches.
 
 > Current status: alpha research scaffold. Offline proxy results are not a
 > production superiority claim. See [the latest benchmark report](docs/BENCHMARK_REPORT.md)
